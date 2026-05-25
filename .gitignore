@@ -12,3 +12,15 @@ recruiter_summaries.txt
 .DS_Store
 Thumbs.db
 *.db
+
+# IDE / tool configs
+.claude/
+.vscode/
+.idea/
+
+# One-off debug scripts
+fix.py
+fix_v2.py
+
+# OS artifacts
+desktop.ini
