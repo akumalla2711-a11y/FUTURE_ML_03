@@ -292,6 +292,7 @@ img { max-width: 100%; }
 .hero {
     position: relative;
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1686,8 +1687,69 @@ img { max-width: 100%; }
 
 /* ── Responsive ────────────────────────────────────────────────── */
 @media (max-width: 768px) {
+    .navbar {
+        padding: 10px 0;
+    }
+
+    .nav-container {
+        padding: 0 var(--space-md);
+        gap: var(--space-sm);
+    }
+
+    .nav-logo {
+        font-size: 1.05rem;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+
+    .logo-icon {
+        width: 32px;
+        height: 32px;
+    }
+
     .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+
+    .nav-links > .nav-link {
         display: none;
+    }
+
+    .theme-toggle {
+        width: 36px;
+        height: 36px;
+    }
+
+    #music-toggle {
+        display: none;
+    }
+
+    .btn-nav-auth {
+        padding: 9px 14px;
+        font-size: 0.82rem;
+    }
+
+    .btn-nav-auth svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .user-name-nav {
+        display: none;
+    }
+
+    .user-avatar-btn {
+        padding: 4px 8px 4px 4px;
+        gap: 6px;
+    }
+
+    .user-dropdown {
+        width: min(92vw, 240px);
+        right: 0;
     }
 
     .hero-title {
@@ -1744,6 +1806,15 @@ img { max-width: 100%; }
         padding: 0 var(--space-md);
     }
 
+    .nav-logo .logo-text {
+        font-size: 0.95rem;
+    }
+
+    .btn-nav-auth {
+        padding: 8px 12px;
+        font-size: 0.78rem;
+    }
+
     .overview-grid {
         grid-template-columns: 1fr 1fr;
         gap: var(--space-md);
@@ -1759,6 +1830,34 @@ img { max-width: 100%; }
 
     .result-block {
         padding: var(--space-lg);
+    }
+
+    .error-toast {
+        left: var(--space-md);
+        right: var(--space-md);
+        transform: none;
+    }
+
+    .error-toast-content {
+        max-width: none;
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: var(--radius-md);
+        font-size: 0.82rem;
+        gap: var(--space-sm);
+    }
+
+    .success-toast {
+        left: var(--space-md);
+        right: var(--space-md);
+        bottom: var(--space-md);
+    }
+
+    .success-toast-content {
+        width: 100%;
+        border-radius: var(--radius-md);
+        padding: 10px 14px;
+        font-size: 0.82rem;
     }
 }
 
