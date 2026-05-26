@@ -67,10 +67,10 @@ class Config:
     RATELIMIT_STORAGE_URI = os.environ.get("RATELIMIT_STORAGE_URI", "memory://")
 
     # Database
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        "DATABASE_URL",
-        f"sqlite:///{BASE_DIR / 'data' / 'resumeai.db'}"
-    )
+    _database_url = os.environ.get("DATABASE_URL", "").strip()
+    if _database_url.startswith("postgres://"):
+        _database_url = _database_url.replace("postgres://", "postgresql://", 1)
+    SQLALCHEMY_DATABASE_URI = _database_url or f"sqlite:///{BASE_DIR / 'data' / 'resumeai.db'}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # JSearch API (RapidAPI)
