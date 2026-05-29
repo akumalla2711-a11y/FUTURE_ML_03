@@ -59,7 +59,7 @@ def fetch_real_jobs(query, location="", page=1, num_pages=1):
     }
 
     try:
-        response = _build_session().get(url, headers=headers, params=params, timeout=20)
+        response = _build_session().get(url, headers=headers, params=params, timeout=4)
         response.raise_for_status()
         data = response.json()
         raw_jobs = data.get("data", [])

@@ -539,15 +539,16 @@ def analyze():
             future_internships = executor.submit(fetch_real_jobs, f"{analysis_category} internships", "Remote")
             
             try:
-                # Limit waiting time to 10 seconds max per request (running concurrently)
-                jobs_res = future_jobs.result(timeout=10)
+                # Limit waiting time to 4 seconds max per request (running concurrently)
+                jobs_res = future_jobs.result(timeout=4)
                 if jobs_res:
                     live_jobs.extend(jobs_res)
             except Exception as e:
                 logger.warning(f"Error fetching live jobs: {e}")
 
             try:
-                intern_res = future_internships.result(timeout=10)
+                # Limit waiting time to 4 seconds max
+                intern_res = future_internships.result(timeout=4)
                 if intern_res:
                     live_jobs.extend(intern_res)
             except Exception as e:
