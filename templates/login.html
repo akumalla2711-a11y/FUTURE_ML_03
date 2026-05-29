@@ -216,7 +216,7 @@
     <div class="login-card">
         <div class="login-header">
             <span class="logo-text">Resume<span class="logo-accent">AI</span></span>
-            <p>Sign in to unlock personalized job recommendations.</p>
+            <p id="login-desc">Sign in to unlock personalized job recommendations.</p>
         </div>
 
         <!-- EMAIL LOGIN PANEL -->
@@ -242,6 +242,10 @@
 
             <div class="divider">or continue with email</div>
 
+            <div class="input-group" id="name-group" style="display: none; margin-bottom: var(--space-md);">
+                <label>Full Name</label>
+                <input type="text" id="name-input" placeholder="Alex Morgan">
+            </div>
             <div class="input-group">
                 <label>Email Address</label>
                 <input type="email" id="email-input" placeholder="you@example.com">
@@ -250,10 +254,15 @@
                 <label>Password</label>
                 <input type="password" id="password-input" placeholder="••••••••">
             </div>
-            <button class="btn btn-primary btn-lg btn-submit" onclick="loginWithEmail()">
-                Sign In
+            <button class="btn btn-primary btn-lg btn-submit" id="submit-btn" onclick="submitAuth()">
+                <span id="submit-btn-text">Sign In</span>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </button>
+            
+            <div style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted);">
+                <span id="toggle-label">Don't have an account?</span> 
+                <a href="#" id="auth-toggle-link" style="color: var(--accent-1); font-weight: 600; text-decoration: none;">Sign Up</a>
+            </div>
         </div>
 
 
@@ -305,19 +314,66 @@
             el.className = isError ? "status-text status-error" : "status-text status-success";
         }
 
-        // --- EMAIL LOGIN ---
-        async function loginWithEmail() {
+        let isSignUp = false;
+        const toggleLink = document.getElementById("auth-toggle-link");
+        const toggleLabel = document.getElementById("toggle-label");
+        const submitBtnText = document.getElementById("submit-btn-text");
+        const loginDesc = document.getElementById("login-desc");
+        const nameGroup = document.getElementById("name-group");
+
+        if (toggleLink) {
+            toggleLink.addEventListener("click", (e) => {
+                e.preventDefault();
+                isSignUp = !isSignUp;
+                
+                document.getElementById('auth-status').innerText = "";
+                
+                if (isSignUp) {
+                    nameGroup.style.display = "flex";
+                    submitBtnText.textContent = "Create Account";
+                    loginDesc.textContent = "Create a new account to get started.";
+                    toggleLabel.textContent = "Already have an account?";
+                    toggleLink.textContent = "Sign In";
+                } else {
+                    nameGroup.style.display = "none";
+                    submitBtnText.textContent = "Sign In";
+                    loginDesc.textContent = "Sign in to unlock personalized job recommendations.";
+                    toggleLabel.textContent = "Don't have an account?";
+                    toggleLink.textContent = "Sign Up";
+                }
+            });
+        }
+
+        // --- EMAIL LOGIN & SIGNUP SUBMISSION ---
+        async function submitAuth() {
             const email = document.getElementById('email-input').value;
             const password = document.getElementById('password-input').value;
+            const name = document.getElementById('name-input').value;
+            
+            if (!email || !password) {
+                setStatus("Email and password are required.", true);
+                return;
+            }
+
+            if (isSignUp && !name) {
+                setStatus("Full Name is required for signing up.", true);
+                return;
+            }
+
+            const endpoint = isSignUp ? '/auth/signup' : '/auth/login';
+            const payload = isSignUp ? { name, email, password } : { email, password };
             
             try {
-                const res = await fetch('/auth/login', {
+                setStatus(isSignUp ? "Creating account..." : "Signing in...", false);
+                const res = await fetch(endpoint, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ email, password })
+                    body: JSON.stringify(payload)
                 });
                 const data = await res.json();
-                if(!res.ok) throw new Error(data.error || "Login failed");
+                if(!res.ok) throw new Error(data.error || (isSignUp ? "Registration failed" : "Login failed"));
+                
+                setStatus(isSignUp ? "Registration successful! Redirecting..." : "Signing in successful! Redirecting...", false);
                 window.location.href = '/';
             } catch(e) {
                 setStatus(e.message, true);
