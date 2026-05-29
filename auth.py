@@ -68,6 +68,13 @@ def signup():
     db.session.add(user)
     db.session.commit()
 
+    # Trigger welcome email safely
+    try:
+        from engine.email_service import send_welcome_email
+        send_welcome_email(user.email, user.name)
+    except Exception as email_err:
+        print(f"Welcome email error: {email_err}")
+
     # Auto-login after signup
     login_user(user, remember=True)
 
@@ -144,6 +151,7 @@ def google_verify():
         name = idinfo.get("name") or (email.split("@")[0] if email else "Google User")
         
         user = User.query.filter_by(google_id=google_id).first()
+        is_new_google_user = False
         if not user:
             # Check if email is already in use by a standard account
             user = User.query.filter_by(email=email).first()
@@ -154,12 +162,21 @@ def google_verify():
                 # Create new user
                 user = User(name=name, email=email, google_id=google_id, password_hash="")
                 db.session.add(user)
+                is_new_google_user = True
             try:
                 db.session.commit()
             except Exception as dbe:
                 db.session.rollback()
                 print(f"DB Error: {dbe}")
                 return jsonify({"error": f"DB Error: {str(dbe)}"}), 500
+            
+            # Send welcome email to new Google user
+            if is_new_google_user:
+                try:
+                    from engine.email_service import send_welcome_email
+                    send_welcome_email(user.email, user.name)
+                except Exception as email_err:
+                    print(f"Welcome email error for Google user: {email_err}")
             
         login_user(user, remember=True)
         return jsonify({"success": True, "message": f"Welcome, {name}!"})
@@ -314,6 +331,13 @@ def employer_register():
     )
     db.session.add(employer)
     db.session.commit()
+
+    # Trigger welcome email safely
+    try:
+        from engine.email_service import send_welcome_email
+        send_welcome_email(user.email, user.name)
+    except Exception as email_err:
+        print(f"Welcome email error for Employer: {email_err}")
 
     login_user(user, remember=True)
     return jsonify({
