@@ -287,7 +287,7 @@
 
         uploadSection.style.display = "none";
         resultsSection.style.display = "none";
-        loadingSection.style.display = "block";
+        loadingSection.style.display = "";
         document.body.classList.remove("results-mode");
         loadingSection.scrollIntoView({ behavior: "smooth", block: "center" });
 
@@ -344,7 +344,7 @@
 
             loadingSection.style.display = "none";
             renderResults(data);
-            resultsSection.style.display = "grid";
+            resultsSection.style.display = "";
             if (dashboardContent) {
                 dashboardContent.scrollTop = 0;
             }
@@ -353,7 +353,7 @@
         } catch (err) {
             clearInterval(msgInterval);
             loadingSection.style.display = "none";
-            uploadSection.style.display = "block";
+            uploadSection.style.display = "";
             document.body.classList.remove("results-mode");
             const msg = (err && err.message) ? err.message : "Analysis failed. Please try again.";
             if (msg === "Failed to fetch" || msg === "Load failed") {
@@ -892,7 +892,7 @@
     // â”€â”€ Try Again â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     tryAgainBtn.addEventListener("click", () => {
         resultsSection.style.display = "none";
-        uploadSection.style.display = "block";
+        uploadSection.style.display = "";
         document.body.classList.remove("results-mode");
         resetUpload();
         uploadSection.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -1095,9 +1095,9 @@
                 showSuccess("Successfully logged out");
                 
                 // If on results, maybe hide it
-                if (resultsSection.style.display === "grid") {
+                if (document.body.classList.contains("results-mode")) {
                     resultsSection.style.display = "none";
-                    uploadSection.style.display = "block";
+                    uploadSection.style.display = "";
                     document.body.classList.remove("results-mode");
                     resetUpload();
                 }
