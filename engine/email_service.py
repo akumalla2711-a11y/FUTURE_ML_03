@@ -9,10 +9,14 @@ logger = logging.getLogger(__name__)
 
 
 def _get_mail_config():
+    username = (os.environ.get("MAIL_USERNAME", "") or "").strip()
+    raw_password = os.environ.get("MAIL_PASSWORD", "") or ""
+    # Strip any spaces from the App Password (Google displays it with spaces, making it 19 chars instead of 16)
+    clean_password = "".join(raw_password.split())
     return {
-        "username": os.environ.get("MAIL_USERNAME", ""),
-        "password": os.environ.get("MAIL_PASSWORD", ""),
-        "from_name": os.environ.get("MAIL_FROM_NAME", "ResumeAI"),
+        "username": username,
+        "password": clean_password,
+        "from_name": os.environ.get("MAIL_FROM_NAME", "ResumeAI") or "ResumeAI",
     }
 
 
